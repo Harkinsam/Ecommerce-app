@@ -4,14 +4,19 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
-@Data
+
 public class LoginRequest {
 
     @NotBlank(message = "Email is required")
     private String email;
 
     @NotBlank(message = "password is required")
-    private String passWord;
+    private String password;
+
+    public LoginRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 
     public @NotBlank(message = "Email is required") String getEmail() {
         return email;
@@ -21,12 +26,11 @@ public class LoginRequest {
         this.email = email;
     }
 
-    public @NotBlank(message = "password is required") String getPassWord() {
-        return passWord;
+    public @NotBlank(message = "password is required") String getPassword() {
+        return password;
     }
 
-    public void setPassWord(@NotBlank(message = "password is required") String passWord) {
-        this.passWord = passWord;
+    public void setPassword(@NotBlank(message = "password is required") String password) {
+        this.password = password;
     }
-
 }

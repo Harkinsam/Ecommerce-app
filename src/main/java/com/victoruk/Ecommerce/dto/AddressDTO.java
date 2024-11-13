@@ -9,11 +9,10 @@ public class AddressDTO {
 
 
     private Long id;
-    private String addressLine1;
+    private String Street;
     private String city;
     private String state;
     private String country;
-    private String phoneNumber;
 
     private UserDTO user;
     private OrderDTO order;

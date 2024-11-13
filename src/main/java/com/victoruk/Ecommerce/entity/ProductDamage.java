@@ -2,8 +2,11 @@ package com.victoruk.Ecommerce.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @Entity
@@ -15,9 +18,10 @@ public class ProductDamage {
     private Long id;
 
     @Column(name = "quantity_damaged", nullable = false)
-    private int quantityDamaged;
+    private String quantityDamaged;
 
-    @Column(name = "damage_date")
+    @CreatedDate
+    @Column(name = "damage_date" , nullable = false)
     private LocalDate damageDate;
 
     @Column(name = "reason")
@@ -29,4 +33,13 @@ public class ProductDamage {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+
+//    @PrePersist
+//    private void oncreate(){
+//
+//        damageDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+//    }
+
+
 }

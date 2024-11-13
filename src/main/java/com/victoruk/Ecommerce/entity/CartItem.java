@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @Entity
@@ -22,10 +24,10 @@ public class CartItem {
         private BigDecimal price;
 
         @Column(name = "created_at", nullable = false)
-        private LocalDate createdAt;
+        private LocalDateTime createdAt;
 
         @Column(name = "updated_at", nullable = false)
-        private LocalDate updatedAt;
+        private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", nullable = false)
@@ -35,4 +37,24 @@ public class CartItem {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-  }
+    @PrePersist
+    private void onCreate(){
+
+        createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
+
+
+    @PreUpdate
+    private void onUpdate(){
+
+        updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
+
+     // price for this CartItem
+
+    public void calculatePrice() {
+        this.price = product.getPrice().multiply(BigDecimal.valueOf(quantity));
+    }
+
+
+}

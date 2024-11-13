@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @Entity
@@ -22,18 +24,11 @@ public class OrderItem {
         @Column(name = "price", precision = 10, scale = 2, nullable = false)
         private BigDecimal price;
 
-        @Column(name = "discount_applied", precision = 10, scale = 2, nullable = false)
-        private BigDecimal discountApplied = BigDecimal.ZERO;
-
-        @Enumerated(EnumType.STRING)
-        @Column(name = "status", nullable = false, length = 20)
-        private OrderItemStatus orderStatus ;
-
         @Column(name = "created_at", nullable = false)
-        private LocalDate createdAt;
+        private LocalDateTime createdAt;
 
         @Column(name = "updated_at", nullable = false)
-        private LocalDate updatedAt;
+        private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
@@ -42,5 +37,18 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+
+    private void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        }
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+
+        updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
 
 }

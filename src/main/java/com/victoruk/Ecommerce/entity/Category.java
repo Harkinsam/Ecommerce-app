@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +21,27 @@ public class Category {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
-    private  String description;
-
     @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
+
+    @PrePersist
+    private void onCreate(){
+
+        createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        updatedAt = createdAt;
+    }
+
+
+    @PreUpdate
+    private void onUpdate(){
+
+        updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
 }

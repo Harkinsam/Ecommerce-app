@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,18 +30,23 @@ public class Product {
 
     @Column(name = "expiry_date" ,nullable = false)
     private LocalDate expiryDate;
+    /////
+    @Column(name = "discounted_price")
+    private BigDecimal discountedPrice;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
-
-    @Column(name = "updated_at",  nullable = false)
-    private LocalDate updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at",  nullable = false)
+    private LocalDateTime updatedAt;
+
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ProductImage> productImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
@@ -51,10 +58,33 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<ProductDamage> productDamages = new ArrayList<>();
 
-    @OneToOne(mappedBy = "product",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne
+    @JoinColumn(name = "discount_id")
     private Discount discount;
 
+    public BigDecimal getDiscountedPrice() {
+        if (discount != null) {
+            return discount.getDiscountedPrice(this);
+        }
+        return price;
+    }
+
+    @PrePersist
+    private void oncreate(){
+
+        createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+
+        updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
 
 
+    private void updateDiscountedPrice() {
+        discountedPrice = getDiscountedPrice();
+    }
 
 }

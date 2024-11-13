@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +29,11 @@ public class Order {
         @Column(name = "order_status", nullable = false, length = 20)
         private OrderStatus orderStatus;
 
-        @Enumerated(EnumType.STRING)
-        @Column(name = "payment_status", nullable = false, length = 20)
-        private PaymentStatus paymentStatus;
-
         @Column(name = "created_at", nullable = false)
-        private LocalDate createdAt;
+        private LocalDateTime createdAt;
 
         @Column(name = "updated_at", nullable = false)
-        private LocalDate updatedAt;
+        private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -46,5 +44,21 @@ public class Order {
 
     @OneToOne(mappedBy = "order",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Address address;
+
+    @OneToOne(mappedBy = "order",fetch = FetchType.LAZY)
+    Payment payment;
+
+
+    private void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        }
+    }
+
+    @PreUpdate
+    private void onUpdate(){
+
+        updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
 
 }

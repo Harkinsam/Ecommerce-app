@@ -13,9 +13,6 @@ public class CartItemDTO {
     private Long id;
     private int quantity;
     private BigDecimal price;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
 
-//    private CartDTO cart;
     private ProductDTO product;
 }

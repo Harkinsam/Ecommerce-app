@@ -13,7 +13,6 @@ public class CategoryDTO {
 
     private Long id;
     private String name;
-    private String description;
     private LocalDate createdAt;
     private LocalDate updatedAt;
     private List<ProductDTO> products = new ArrayList<>();

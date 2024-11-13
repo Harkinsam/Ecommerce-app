@@ -19,6 +19,4 @@ public class DiscountDTO {
 
     private LocalDate endDate;
 
-    private Product product;
-
 }

@@ -1,4 +1,4 @@
-package com.victoruk.Ecommerce.service.interfac;
+package com.victoruk.Ecommerce.services.interfac;
 
 
 import com.victoruk.Ecommerce.dto.LoginRequest;
@@ -11,11 +11,11 @@ public interface Userinterface {
 
     Response  login(LoginRequest loginRequest);
 
-//    Response getAllUsers();
+    Response getAllUser();
 
-    Response getUserById(String userId);
+    Response getUserById(Long userId);
 
-    Response getUserOrderHistory(String userId);
+    Response getUserOrderHistory(Long userId);
 
     Response getMyInfo( String email);
 }

@@ -1,4 +1,4 @@
-package com.victoruk.Ecommerce.jwt;
+package com.victoruk.Ecommerce.Jwt_securityconfig;
 
 import lombok.Data;
 

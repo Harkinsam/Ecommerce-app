@@ -1,6 +1,7 @@
 package com.victoruk.Ecommerce.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,14 +26,15 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
-    private String userName;
+    @NotNull
+    @Column(name = "username",  nullable = false)
+    private String name;
     
     @Column(name = "email" , nullable = false, unique = true)
     private String email;
 
     @Column(name = "password" , nullable = false)
-    private String passWord;
+    private String password;
 
     @Column(name = "phone_number" , nullable = false)
     private String phoneNumber;
@@ -55,27 +58,19 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Address address;
 
+    @PrePersist
+    private void onCreate(){
+        createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        updatedAt = createdAt;
 
-//    public Role getRole() {        //manual added to check the error
-//        return role;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }    //manual added to check the error
-//
-//    public String setPassWord(String passWord) {     //manual added to check the error
-//        return setPassWord(passWord);
-//    }
-//
-//    public void setRole(Role role) {     //manual added to check the errorg
-//        this.role = role;
-//    }
+    }
 
+    @PreUpdate
+    private void onUpdate(){
+        createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -84,7 +79,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return passWord;
+        return password;
     }
 
     @Override
@@ -111,4 +106,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

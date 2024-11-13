@@ -17,9 +17,6 @@ public class OrderItemDTO {
     private BigDecimal price;
     private BigDecimal discountApplied;
     private OrderItemStatus orderStatus;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
-
 
     private OrderDTO order;
     private ProductDTO product;

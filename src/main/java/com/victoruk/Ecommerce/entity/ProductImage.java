@@ -2,8 +2,10 @@ package com.victoruk.Ecommerce.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @Entity
@@ -20,10 +22,19 @@ public class ProductImage {
     @Column(name = "alt_text", nullable = false)
     private String altText;
 
+    @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id")
     private Product product;
+
+
+    @PrePersist
+    private void oncreate(){
+
+        createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+    }
+
 }

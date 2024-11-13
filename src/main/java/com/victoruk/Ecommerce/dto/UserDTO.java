@@ -9,19 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-//@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class UserDTO {
 
     private Long id;
-    private String userName;
+    private String name;
     private String email;
     private String phoneNumber;
     private Role role;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
     private CartDTO cart;
     private List<OrderDTO> orders = new ArrayList<>();
-    private AddressDTO address;
 }
