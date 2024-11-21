@@ -102,17 +102,21 @@ public class Mapper {
         productDTO.setPrice(product.getPrice());
         productDTO.setExpiryDate(product.getExpiryDate());
 
-        // Check if discount is active and within valid date range
+        // Check if discount is present and valid
         if (product.getDiscount() != null) {
             Discount discount = product.getDiscount();
-            LocalDateTime now = LocalDateTime.now();
-            if (now.isAfter(discount.getStartDate()) && now.isBefore(discount.getEndDate())) {
-                BigDecimal discountedPrice = product.getPrice().subtract(
-                        product.getPrice().multiply(discount.getDiscountPercentage().divide(new BigDecimal(100)))
-                );
-                productDTO.setDiscountedPrice(discountedPrice);
+            if (discount.getStartDate() != null && discount.getEndDate() != null) {
+                LocalDateTime now = LocalDateTime.now();
+                if (now.isAfter(discount.getStartDate()) && now.isBefore(discount.getEndDate())) {
+                    BigDecimal discountedPrice = product.getPrice().subtract(
+                            product.getPrice().multiply(discount.getDiscountPercentage().divide(new BigDecimal(100)))
+                    );
+                    productDTO.setDiscountedPrice(discountedPrice);
+                } else {
+                    productDTO.setDiscountedPrice(product.getPrice());  // No discount applied
+                }
             } else {
-                productDTO.setDiscountedPrice(product.getPrice());  // No discount applied
+                productDTO.setDiscountedPrice(product.getPrice());  // Discount dates are invalid
             }
         } else {
             productDTO.setDiscountedPrice(product.getPrice()); // No discount available
@@ -120,6 +124,7 @@ public class Mapper {
 
         return productDTO;
     }
+
 
 
 //    public static ProductDTO mapProductEntityToProductDto(Product product) {

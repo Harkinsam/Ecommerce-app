@@ -4,8 +4,10 @@ import com.victoruk.Ecommerce.Exception.MyException;
 import com.victoruk.Ecommerce.dto.ProductDTO;
 import com.victoruk.Ecommerce.dto.ProductImageDTO;
 import com.victoruk.Ecommerce.dto.Response;
+import com.victoruk.Ecommerce.entity.Discount;
 import com.victoruk.Ecommerce.entity.Product;
 import com.victoruk.Ecommerce.entity.ProductImage;
+import com.victoruk.Ecommerce.repository.DiscountRepository;
 import com.victoruk.Ecommerce.repository.ProductImageRepository;
 import com.victoruk.Ecommerce.repository.ProductRepository;
 import com.victoruk.Ecommerce.services.interfac.ProductInterface;
@@ -24,24 +26,28 @@ import static com.victoruk.Ecommerce.Mapper.Mapper.mapProductEntityToProductDto;
 public class ProductService implements ProductInterface {
 
     private final ProductRepository productRepository;
+    private final DiscountRepository discountRepository;
 
     private final ProductImageRepository productImageRepository;
 
 
-
-    public ProductService(ProductRepository productRepository, ProductImageRepository productImageRepository) {
+    public ProductService(ProductRepository productRepository, DiscountRepository discountRepository, ProductImageRepository productImageRepository) {
         this.productRepository = productRepository;
+        this.discountRepository = discountRepository;
         this.productImageRepository = productImageRepository;
-
     }
-
-
 
     @Override
     public Response addProduct(Product product) {
         Response response = new Response();
 
         try {
+            // Fetch the discount by its ID
+            Discount discount = discountRepository.findById(product.getDiscount().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Discount not found"));
+
+            // Link the discount to the product
+            product.setDiscount(discount);
             // Save the product to the repository
             Product savedProduct = productRepository.save(product);
             var productDTO = mapProductEntityToProductDto(savedProduct);
@@ -50,6 +56,9 @@ public class ProductService implements ProductInterface {
             response.setMessage("Product added successfully.");
             response.setData(Map.of("product", productDTO));
 
+        } catch (IllegalArgumentException e) {
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("An unexpected error occurred: " + e.getMessage());

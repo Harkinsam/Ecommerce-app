@@ -34,25 +34,50 @@ public class Discount {
         }
     }
 
-
     public BigDecimal getDiscountedPrice(Product product) {
         // Get the current date and time
         LocalDateTime now = LocalDateTime.now();
 
-        // Check if the discount is active based on the start and end dates
-        if (now.isAfter(startDate) && now.isBefore(endDate)) {
-            // Calculate the discounted multiplier as (1 - discountPercentage / 100)
-            BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
-                    discountPercentage.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
-            );
-
-            // Apply the discount to the product's price
-            return product.getPrice().multiply(discountMultiplier).setScale(2, RoundingMode.HALF_UP);
+        // Check if discount dates are valid
+        if (startDate != null && endDate != null) {
+            if (now.isAfter(startDate) && now.isBefore(endDate)) {
+                // Calculate the discounted price
+                BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
+                        discountPercentage.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
+                );
+                return product.getPrice().multiply(discountMultiplier).setScale(2, RoundingMode.HALF_UP);
+            }
+        } else {
+            // Log or handle the case where the dates are null
+            System.out.println("Discount has invalid dates");
         }
 
         // Return original price if discount is not active
         return product.getPrice();
     }
+
+
+
+
+
+//    public BigDecimal getDiscountedPrice(Product product) {
+//        // Get the current date and time
+//        LocalDateTime now = LocalDateTime.now();
+//
+//        // Check if the discount is active based on the start and end dates
+//        if (now.isAfter(startDate) && now.isBefore(endDate)) {
+//            // Calculate the discounted multiplier as (1 - discountPercentage / 100)
+//            BigDecimal discountMultiplier = BigDecimal.ONE.subtract(
+//                    discountPercentage.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)
+//            );
+//
+//            // Apply the discount to the product's price
+//            return product.getPrice().multiply(discountMultiplier).setScale(2, RoundingMode.HALF_UP);
+//        }
+//
+//        // Return original price if discount is not active
+//        return product.getPrice();
+//    }
 
 
 //    public BigDecimal getDiscountedPrice(Product product) {

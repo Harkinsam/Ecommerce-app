@@ -74,17 +74,19 @@ public class Product {
 
         createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         updatedAt = createdAt;
+        updateDiscountedPrice();
     }
 
     @PreUpdate
     private void onUpdate(){
 
         updatedAt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        updateDiscountedPrice();
     }
 
 
     private void updateDiscountedPrice() {
-        discountedPrice = getDiscountedPrice();
+        this.discountedPrice = getDiscountedPrice();
     }
 
 }
